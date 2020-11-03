@@ -6,6 +6,7 @@ namespace JokeGenerator.Interactions.IO
     {
         public ConsoleWriter()
         {
+            Console.OutputEncoding = System.Text.Encoding.Unicode; //Bugfix # 2a
         }
 
         public void WriteLine(string line)

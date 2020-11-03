@@ -29,6 +29,7 @@ namespace JokeGenerator.Repository
                 string surname = JsonConvert.DeserializeObject<dynamic>(responseString).surname;
 
                 return $"{name} {surname}";
+                //return "崔 豪"; //Harcoded a Chinese name to reproduce Bug # 2a
             }
             else
             {
