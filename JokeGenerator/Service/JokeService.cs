@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace JokeGenerator.Service
@@ -11,17 +12,20 @@ namespace JokeGenerator.Service
 
         public HashSet<string> ReplaceChuckNorrisOccurences(HashSet<string> jokes, string name)
         {
-            if (name == null)
-            {
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name)) //BugFix 1a            
                 return jokes;
-            }
+
+            if (jokes == null) //BugFix 1b
+                throw new ArgumentNullException(nameof(jokes));
+
 
             HashSet<string> updatedJokes = new HashSet<string>();
+            Regex regex = new Regex(@"\b(chuck norris)\b", RegexOptions.IgnoreCase | RegexOptions.Multiline);  //BugFix 1c
 
-            Regex regex = new Regex("(?i)Chuck Norris(?-i)");
-            foreach (string joke in jokes)
+            foreach (string joke in jokes) //BugFix 1b
             {
-                updatedJokes.Add(regex.Replace(joke, name));
+                if (!string.IsNullOrEmpty(joke)) //BugFix 1b
+                    updatedJokes.Add(regex.Replace(joke, name));
             }
 
             return updatedJokes;
