@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using JokeGenerator.Interactions;
 using JokeGenerator.Interactions.IO;
 using JokeGenerator.Repository;
@@ -11,22 +12,35 @@ namespace JokeGenerator
     {
         static void Main(string[] args)
         {
-            HttpClient httpClient = new HttpClient();
+            ConsoleWriter writer = null;
 
-            JokeRepository jokeRepository = new JokeRepository(httpClient);
-            NameRepository nameRepository = new NameRepository(httpClient);
+            try                                                   //BugFix #2b
+            {
+                HttpClient httpClient = new HttpClient();
 
-            ConsoleWriter writer = new ConsoleWriter();
-            IReader reader = new ConsoleReader(writer);
+                JokeRepository jokeRepository = new JokeRepository(httpClient);
+                NameRepository nameRepository = new NameRepository(httpClient);
 
-            UserQuestions userQuestions = new UserQuestions(reader, writer);
-            UserInteractions userInteractions = new UserInteractions(writer, userQuestions);
+                writer = new ConsoleWriter();
+                IReader reader = new ConsoleReader(writer);
 
-            JokeService jokeService = new JokeService();
+                UserQuestions userQuestions = new UserQuestions(reader, writer);
+                UserInteractions userInteractions = new UserInteractions(writer, userQuestions);
 
-            ProgramRunner programRunner = new ProgramRunner(userInteractions, jokeRepository, nameRepository, jokeService);
+                JokeService jokeService = new JokeService();
 
-            programRunner.Run();
+                ProgramRunner programRunner = new ProgramRunner(userInteractions, jokeRepository, nameRepository, jokeService);
+
+                programRunner.Run();
+            }
+            catch(Exception)
+            {
+                if (writer != null)
+                {
+                    writer.WriteLine("Something went terribly wrong.");
+                    writer.WriteLine("Are you sure you're connected to the internet?");
+                }
+            }
         }
     }
 }
